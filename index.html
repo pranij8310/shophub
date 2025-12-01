@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopHub - Modern E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .cart-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 scroll-smooth">
+    
+    <!-- Navigation -->
+    <!-- START: Professional Animated Navbar -->
+<nav id="main-nav" class="bg-white sticky top-0 z-50 transform-gpu transition-shadow duration-300">
+  <style>
+    /* Custom small styles and animations */
+    .brand-gradient { background: linear-gradient(90deg,#7c3aed,#4f46e5); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:700; }
+    .nav-shadow { box-shadow: 0 8px 24px rgba(2,6,23,0.08); }
+    .menu-backdrop { background: linear-gradient(180deg, rgba(79,70,229,0.04), rgba(79,70,229,0.02)); }
+    .pulse { animation: navPulse 1.8s infinite; }
+    @keyframes navPulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+    /* mobile menu slide */
+    .mobile-menu { transform: translateY(-8px); opacity: 0; transition: transform .28s ease, opacity .28s ease; }
+    .mobile-menu.show { transform: translateY(0); opacity: 1; }
+
+    /* stagger reveal for menu items */
+    .stagger-child { opacity: 0; transform: translateY(6px); transition: opacity .32s ease, transform .32s ease; }
+    .stagger-child.show { opacity: 1; transform: none; }
+
+    /* keyboard focus ring */
+    .focus-ring:focus { outline: 3px solid rgba(79,70,229,.12); outline-offset: 4px; }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .pulse, .mobile-menu, .stagger-child { animation: none !important; transition: none !important; transform: none !important; opacity: 1 !important; }
+    }
+  </style>
+
+  <div class="container mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between py-3">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <a href="#home" class="flex items-center gap-3 focus-ring" aria-label="ShopHub home">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#7c3aed,#4f46e5); color:white; font-weight:700;">SH</div>
+          <div class="hidden sm:block">
+            <div class="brand-gradient text-lg">ShopHub</div>
+            <div class="text-xs text-gray-500 -mt-0.5">Curated • Fast • Secure</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-10">
+        <div class="flex items-center gap-8">
+          <a href="#home" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition focus-ring">Home</a>
+          <a href="#products" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition focus-ring">Products</a>
+          <a href="#categories" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition focus-ring">Categories</a>
+          <a href="#about" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition focus-ring">About</a>
+        </div>
+
+        <!-- Search (desktop) -->
+        <div class="relative">
+          <label for="nav-search" class="sr-only">Search products</label>
+          <input id="nav-search" class="px-3 py-2 rounded-lg border border-gray-200 w-64 focus:ring-2 focus:ring-indigo-200 focus:outline-none" placeholder="Search products, brands..." />
+          <button id="nav-search-clear" class="absolute right-1 top-1/2 -translate-y-1/2 text-sm text-gray-500 hidden" aria-label="Clear search">✕</button>
+        </div>
+      </div>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-3">
+        <!-- CTA / Profile (optional) -->
+        <a href="#contact" class="hidden md:inline-block px-4 py-2 rounded-md text-sm border border-gray-200 hover:bg-gray-50 transition focus-ring">Contact</a>
+
+        <!-- Search icon (mobile) -->
+        <button id="mobile-search-toggle" class="md:hidden p-2 rounded focus-ring" aria-label="Open search">
+          <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </button>
+
+        <!-- Cart -->
+        <button id="cart-btn" class="relative p-2 focus-ring" aria-label="Open cart" aria-haspopup="dialog" aria-controls="cart" aria-expanded="false">
+          <svg class="w-6 h-6 text-gray-700 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4z"></path>
+          </svg>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Mobile menu toggle -->
+        <button id="mobile-toggle" class="md:hidden p-2 rounded focus-ring" aria-label="Open menu" aria-expanded="false">
+          <svg id="hamburger" class="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile slide-down menu -->
+  <div id="mobile-menu" class="md:hidden border-t border-gray-100 mobile-menu hidden">
+    <div class="container mx-auto px-4 sm:px-6 py-4 menu-backdrop">
+      <div class="flex flex-col gap-3">
+        <a href="#home" class="stagger-child block px-3 py-2 rounded hover:bg-indigo-50 focus-ring">Home</a>
+        <a href="#products" class="stagger-child block px-3 py-2 rounded hover:bg-indigo-50 focus-ring">Products</a>
+        <a href="#categories" class="stagger-child block px-3 py-2 rounded hover:bg-indigo-50 focus-ring">Categories</a>
+        <a href="#about" class="stagger-child block px-3 py-2 rounded hover:bg-indigo-50 focus-ring">About</a>
+
+        <div class="pt-3 border-t mt-3">
+          <label class="sr-only" for="mobile-search">Search</label>
+          <div class="flex items-center gap-2">
+            <input id="mobile-search" class="flex-1 px-3 py-2 border rounded focus:ring-2 focus:ring-indigo-200" placeholder="Search products..." />
+            <button id="mobile-search-go" class="px-3 py-2 bg-indigo-600 text-white rounded">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // elements
+      const nav = document.getElementById('main-nav');
+      const mobileToggle = document.getElementById('mobile-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.querySelectorAll('.nav-link');
+      const cartBtn = document.getElementById('cart-btn');
+      const cartCount = document.getElementById('cart-count');
+      const search = document.getElementById('nav-search');
+      const searchClear = document.getElementById('nav-search-clear');
+
+      // mobile toggle handler with staggered reveal
+      mobileToggle.addEventListener('click', () => {
+        const expanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+        mobileToggle.setAttribute('aria-expanded', String(!expanded));
+        hamburger.classList.toggle('transform');
+        if (mobileMenu.classList.contains('show')) {
+          // close
+          mobileMenu.classList.remove('show'); setTimeout(()=> mobileMenu.classList.add('hidden'), 280);
+          mobileMenu.querySelectorAll('.stagger-child').forEach(el => el.classList.remove('show'));
+        } else {
+          // open
+          mobileMenu.classList.remove('hidden'); requestAnimationFrame(()=> mobileMenu.classList.add('show'));
+          // stagger in
+          mobileMenu.querySelectorAll('.stagger-child').forEach((el, i) => setTimeout(()=> el.classList.add('show'), 60 * i));
+        }
+      });
+
+      // add shadow when scrolling
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 8) nav.classList.add('nav-shadow'); else nav.classList.remove('nav-shadow');
+      });
+
+      // set active link based on hash
+      function setActiveFromHash() {
+        const hash = location.hash || '#home';
+        navLinks.forEach(a => {
+          const href = a.getAttribute('href');
+          if (href === hash) a.classList.add('text-indigo-600'); else a.classList.remove('text-indigo-600');
+        });
+      }
+      setActiveFromHash();
+      window.addEventListener('hashchange', setActiveFromHash);
+
+      // search clear button logic
+      if (search) {
+        search.addEventListener('input', () => { searchClear.style.display = search.value ? 'inline' : 'none'; });
+        searchClear.addEventListener('click', () => { search.value = ''; searchClear.style.display = 'none'; search.focus(); });
+      }
+
+      // expose a helper to update cart count and pulse animation
+      window.setCartCount = function (n) {
+        cartCount.textContent = n;
+        // visual pulse
+        cartCount.classList.add('pulse');
+        setTimeout(() => cartCount.classList.remove('pulse'), 1400);
+      };
+
+      // keyboard: allow Enter on mobile menu items
+      document.querySelectorAll('#mobile-menu a').forEach(a => {
+        a.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); a.click(); }
+        });
+      });
+
+      // small accessibility: focus trap optional (not implemented here; add if opening a modal)
+      // initialize cart count from localStorage if available
+      try {
+        const stored = JSON.parse(localStorage.getItem('shophub_cart') || '[]');
+        if (Array.isArray(stored) && stored.length) {
+          const qty = stored.reduce((s,i)=>s+i.quantity,0);
+          window.setCartCount(qty);
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+</nav>
+<!-- END: Professional Animated Navbar -->
+
+
+    <!-- Hero Section -->
+    <!-- START: Enhanced Hero (replace your existing #home section) -->
+<section id="home" class="relative overflow-hidden">
+  <style>
+    /* Custom styles for enhanced hero */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hero-animated-bg {
+      background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 30%, #4f46e5 60%, #06b6d4 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    /* subtle floating for thumbnails */
+    .float-slow { animation: floatY 6s ease-in-out infinite; }
+    @keyframes floatY { 0% { transform: translateY(0px);} 50% { transform: translateY(-10px);} 100% { transform: translateY(0px);} }
+
+    /* headline reveal */
+    .reveal { opacity: 0; transform: translateY(18px) scale(.995); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.show { opacity: 1; transform: none; }
+
+    /* subtle glass card for product thumbnails */
+    .glass-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 30px rgba(12,18,36,0.15);
+    }
+
+    /* accessibility: disable animations for reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-animated-bg { animation: none !important; }
+      .float-slow { animation: none !important; }
+      .reveal { transition: none !important; transform: none !important; opacity: 1 !important; }
+    }
+
+    /* decorative diagonal lines */
+    .diagonal-lines {
+      background-image: linear-gradient(135deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+                        linear-gradient(225deg, rgba(255,255,255,0.03) 25%, transparent 25%);
+      background-size: 24px 24px;
+      opacity: .6;
+      pointer-events: none;
+    }
+  </style>
+
+  <div class="hero-animated-bg text-white py-24 sm:py-32">
+    <div class="container mx-auto px-4 sm:px-6 relative">
+      <!-- decorative SVG wave bottom -->
+      <div class="absolute inset-x-0 bottom-0 -mb-1 pointer-events-none" aria-hidden="true">
+        <svg viewBox="0 0 1200 80" preserveAspectRatio="none" class="w-full h-20 opacity-90">
+          <path d="M0,40 C150,80 350,0 600,40 C850,80 1050,0 1200,40 L1200 80 L0 80 Z" fill="rgba(255,255,255,0.06)"></path>
+        </svg>
+      </div>
+
+      <div class="max-w-4xl mx-auto text-center relative z-10">
+        <!-- Badge row -->
+        <div class="flex items-center justify-center gap-3 mb-6">
+          <span class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm font-medium glass-card">
+            <svg class="w-4 h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Curated • Fast shipping
+          </span>
+
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-white/6 glass-card">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v4H3zM3 11h18v10H3z"></path>
+            </svg>
+            30-day returns
+          </span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight reveal" id="hero-headline">
+          <span class="block">Welcome to</span>
+          <span class="block bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent font-extrabold">
+            ShopHub
+          </span>
+        </h1>
+        
+
+        <!-- Subheadline -->
+        <p class="mt-6 text-lg sm:text-xl text-purple-100 max-w-2xl mx-auto reveal" id="hero-sub">
+          Discover carefully curated products, exclusive deals and fast delivery — everything you need in one professional storefront.
+        </p>
+
+        <!-- CTAs -->
+        <div class="mt-8 flex items-center justify-center gap-4 reveal" id="hero-ctas">
+          <a href="#products" class="inline-flex items-center gap-3 bg-white text-purple-700 font-semibold px-6 py-3 rounded-full shadow-lg transform hover:-translate-y-1 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v4H3zM3 11h18v10H3z"/></svg>
+            Shop Now
+          </a>
+          <a href="#collections" class="inline-flex items-center gap-2 border border-white/20 px-5 py-3 rounded-full text-sm hover:bg-white/6 transition">
+            View Collections
+          </a>
+        </div>
+
+        <!-- Visual: floating product thumbnails -->
+        <div class="mt-12 relative w-full h-44 sm:h-56">
+          <!-- central glowing card -->
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl pointer-events-none">
+            <div class="relative">
+              <div class="absolute -left-6 -top-8 w-44 h-28 rounded-xl glass-card p-3 flex items-center justify-center float-slow" style="transform: translateY(-6px) rotate(-6deg);">
+                <div class="text-center">
+                  <div class="text-2xl">🔊</div>
+                  <div class="text-sm font-semibold mt-2">Bluetooth Speaker</div>
+                </div>
+              </div>
+
+              <div class="absolute right-0 -top-4 w-48 h-32 rounded-xl glass-card p-3 flex items-center justify-center float-slow" style="animation-delay:.7s; transform: translateY(0) rotate(6deg);">
+                <div class="text-center">
+                  <div class="text-2xl">⌚</div>
+                  <div class="text-sm font-semibold mt-2">Smart Watch</div>
+                </div>
+              </div>
+
+              <div class="absolute left-12 bottom-0 w-36 h-24 rounded-xl glass-card p-3 flex items-center justify-center float-slow" style="animation-delay: .3s;">
+                <div class="text-center">
+                  <div class="text-2xl">🎧</div>
+                  <div class="text-sm font-semibold mt-1">Headphones</div>
+                </div>
+              </div>
+
+              <div class="absolute right-28 bottom-0 w-36 h-24 rounded-xl glass-card p-3 flex items-center justify-center float-slow" style="animation-delay: .9s;">
+                <div class="text-center">
+                  <div class="text-2xl">👟</div>
+                  <div class="text-sm font-semibold mt-1">Running Shoe</div>
+                </div>
+              </div>
+
+              <!-- faint decorative diagonal pattern -->
+              <div class="absolute inset-0 diagonal-lines rounded-xl pointer-events-none"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- small trust row -->
+        <div class="mt-6 flex items-center justify-center gap-6 text-sm text-purple-100 reveal" id="hero-trust">
+          <div class="flex items-center gap-2"><strong>✅</strong> Secure payments</div>
+          <div class="flex items-center gap-2"><strong>🚚</strong> Fast shipping</div>
+          <div class="flex items-center gap-2"><strong>⭐</strong> 4.7 average rating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional subtle mouse-parallax script -->
+  <script>
+    (function(){
+      // reveal elements when in viewport
+      const reveals = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting) en.target.classList.add('show');
+        });
+      }, { threshold: 0.18 });
+      reveals.forEach(r => obs.observe(r));
+
+      // mouse parallax for floating thumbnails (subtle)
+      const hero = document.querySelector('#home .max-w-4xl');
+      const floats = document.querySelectorAll('.glass-card');
+      if (hero && floats.length) {
+        hero.addEventListener('mousemove', (e) => {
+          const rect = hero.getBoundingClientRect();
+          const dx = (e.clientX - rect.left) / rect.width - 0.5;
+          const dy = (e.clientY - rect.top) / rect.height - 0.5;
+          floats.forEach((f, i) => {
+            const amp = 10 + i * 3;
+            f.style.transform = `translate3d(${dx * amp}px, ${dy * amp}px, 0) rotate(${(i-1.5)*3}deg)`;
+          });
+        });
+        hero.addEventListener('mouseleave', () => {
+          floats.forEach((f) => f.style.transform = '');
+        });
+      }
+    })();
+  </script>
+</section>
+
+
+<section id="categories" class="py-16 bg-white">
+  <style>
+    /* small extra styles for nicer focus ring on keyboard */
+    .cat-focus:focus {
+      outline: 3px solid rgba(99,102,241,.18);
+      outline-offset: 4px;
+    }
+    .glass-soft {
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.72));
+      border: 1px solid rgba(15,23,42,0.04);
+      backdrop-filter: blur(6px);
+    }
+    .icon-circle {
+      width: 64px; height: 64px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius: 12px;
+    }
+  </style>
+
+  <div class="container mx-auto px-4 sm:px-6">
+    <h3 class="text-3xl font-bold text-center mb-8 text-gray-800">Shop by Category</h3>
+
+    <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8">
+      Browse top categories — curated picks and trending items in each.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" role="list" aria-label="Shop categories">
+      <!-- Electronics -->
+      <button role="listitem" aria-label="Electronics category" tabindex="0"
+              class="category-card cat-focus text-left p-6 rounded-xl transition transform hover:-translate-y-2 hover:shadow-2xl glass-soft"
+              data-category="electronics" data-count="0" onclick="filterCategory('electronics')">
+        <div class="flex items-start gap-4">
+          <div class="icon-circle bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-700 drop-shadow-sm">
+            <!-- laptop / electronics SVG -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+              <path d="M8 21h8"></path>
+              <path d="M12 17v4"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h4 class="font-semibold text-gray-800 text-lg">Electronics</h4>
+              <span class="text-sm text-gray-500" id="count-electronics">20</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Phones, audio, accessories & more — top-rated tech.</p>
+          </div>
+        </div>
+      </button>
+
+      <!-- Fashion -->
+      <button role="listitem" aria-label="Fashion category" tabindex="0"
+              class="category-card cat-focus text-left p-6 rounded-xl transition transform hover:-translate-y-2 hover:shadow-2xl glass-soft"
+              data-category="fashion" data-count="0" onclick="filterCategory('fashion')">
+        <div class="flex items-start gap-4">
+          <div class="icon-circle bg-gradient-to-br from-pink-100 to-pink-200 text-pink-700">
+            <!-- shirt icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l2 2 4-1 1 6-6 3-6-3 1-6 4 1z"></path>
+              <path d="M3 21a4 4 0 004-4v-6"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h4 class="font-semibold text-gray-800 text-lg">Fashion</h4>
+              <span class="text-sm text-gray-500" id="count-fashion">19</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Clothing, footwear & accessories — fresh arrivals daily.</p>
+          </div>
+        </div>
+      </button>
+
+      <!-- Home & Living -->
+      <button role="listitem" aria-label="Home & Living category" tabindex="0"
+              class="category-card cat-focus text-left p-6 rounded-xl transition transform hover:-translate-y-2 hover:shadow-2xl glass-soft"
+              data-category="home" data-count="0" onclick="filterCategory('home')">
+        <div class="flex items-start gap-4">
+          <div class="icon-circle bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700">
+            <!-- home icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11l9-7 9 7"></path>
+              <path d="M5 22V12h14v10"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h4 class="font-semibold text-gray-800 text-lg">Home & Living</h4>
+              <span class="text-sm text-gray-500" id="count-home">27</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Decor, kitchen, and everyday essentials for modern homes.</p>
+          </div>
+        </div>
+      </button>
+
+      <!-- All Products -->
+      <button role="listitem" aria-label="All products" tabindex="0"
+              class="category-card cat-focus text-left p-6 rounded-xl transition transform hover:-translate-y-2 hover:shadow-2xl glass-soft"
+              data-category="all" data-count="0" onclick="filterCategory('all')">
+        <div class="flex items-start gap-4">
+          <div class="icon-circle bg-gradient-to-br from-green-100 to-green-200 text-green-700">
+            <!-- grid icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="8" height="8"></rect>
+              <rect x="13" y="3" width="8" height="8"></rect>
+              <rect x="3" y="13" width="8" height="8"></rect>
+              <rect x="13" y="13" width="8" height="8"></rect>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h4 class="font-semibold text-gray-800 text-lg">All Products</h4>
+              <span class="text-sm text-gray-500" id="count-all">66</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Explore our entire catalog — discover something new today.</p>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Populate counts automatically if you have a `products` array on the page.
+    (function () {
+      if (!window.products || !Array.isArray(window.products)) return;
+
+      const counts = { electronics: 20, fashion: 0, home: 0, all: window.products.length };
+      window.products.forEach(p => {
+        if (p.category === 'electronics') counts.electronics++;
+        else if (p.category === 'fashion') counts.fashion++;
+        else if (p.category === 'home') counts.home++;
+      });
+
+      document.getElementById('count-electronics').textContent = counts.electronics;
+      document.getElementById('count-fashion').textContent = counts.fashion;
+      document.getElementById('count-home').textContent = counts.home;
+      document.getElementById('count-all').textContent = counts.all;
+
+      // keyboard support: Enter or Space on focused card triggers click
+      document.querySelectorAll('[role=\"listitem\"]').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+    })();
+  </script>
+</section>
+
+
+    <!-- START: Enhanced Animated Products Section -->
+<section id="products" class="py-16 bg-gray-50">
+  <style>
+    /* small custom styles */
+    .reveal { opacity: 0; transform: translateY(12px) scale(.995); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.show { opacity: 1; transform: none; }
+    .card-tilt { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; transform-origin: center; }
+    .card-tilt:hover { transform: translateY(-10px) rotateX(2deg) rotateY(-2deg); box-shadow: 0 20px 40px rgba(2,6,23,.12); }
+    .skeleton { background: linear-gradient(90deg,#eee,#f5f5f7,#eee); background-size:200% 100%; animation: shimmer 1.2s linear infinite; }
+    @keyframes shimmer { 0% { background-position:-200% 0 } 100% { background-position:200% 0 } }
+    .cart-fly { position: fixed; z-index: 9999; width: 48px; height: 48px; border-radius: 8px; pointer-events:none; transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .6s; }
+    @media (prefers-reduced-motion: reduce) { .reveal, .card-tilt, .skeleton, .cart-fly { transition: none !important; animation: none !important; transform: none !important; } }
+  </style>
+
+  <div class="container mx-auto px-4 sm:px-6">
+    <!-- Toolbar -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <input id="prod-search" class="px-4 py-2 rounded-lg border w-64 focus:ring-2 focus:ring-purple-400" placeholder="Search products..." />
+          <button id="search-clear" class="absolute right-1 top-1/2 -translate-y-1/2 text-sm text-gray-500 hidden">✕</button>
+        </div>
+
+        <!-- Category pills (auto-generated by JS) -->
+        <div id="category-pills" class="flex gap-2 flex-wrap"></div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <label for="sort-select" class="text-sm text-gray-600 hidden sm:inline">Sort</label>
+        <select id="sort-select" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+          <option value="default">Recommended</option>
+          <option value="price-low">Price: Low → High</option>
+          <option value="price-high">Price: High → Low</option>
+          <option value="rating">Top Rated</option>
+          <option value="name">Name: A → Z</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <!-- skeletons while loading -->
+      <template id="skeleton-template">
+        <div class="animate-pulse">
+          <div class="skeleton rounded-lg h-48"></div>
+          <div class="mt-3">
+            <div class="skeleton h-5 rounded w-3/4 mb-2"></div>
+            <div class="skeleton h-4 rounded w-1/3"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- load more -->
+    <div class="mt-8 text-center">
+      <button id="load-more" class="px-5 py-2 rounded border">Load more</button>
+    </div>
+  </div>
+
+  <!-- Quick view modal -->
+  <div id="quick-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden">
+      <div class="grid md:grid-cols-2 gap-4 p-6">
+        <div id="quick-img" class="rounded-lg overflow-hidden bg-gray-100"></div>
+        <div>
+          <h3 id="quick-name" class="text-2xl font-bold"></h3>
+          <div id="quick-price" class="text-xl text-purple-600 font-semibold mt-3"></div>
+          <p id="quick-desc" class="mt-4 text-gray-600"></p>
+          <div class="mt-6 flex items-center gap-3">
+            <input id="quick-qty" type="number" min="1" value="1" class="w-20 px-3 py-2 border rounded" />
+            <button id="quick-add" class="px-4 py-2 rounded bg-purple-600 text-white">Add to cart</button>
+            <button id="quick-close" class="px-4 py-2 rounded border">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // helpful refs
+      const grid = document.getElementById('products-grid');
+      const skeletonTpl = document.getElementById('skeleton-template');
+      const loadMoreBtn = document.getElementById('load-more');
+      const searchInput = document.getElementById('prod-search');
+      const clearBtn = document.getElementById('search-clear');
+      const sortSelect = document.getElementById('sort-select');
+      const pillsContainer = document.getElementById('category-pills');
+
+      // Quick modal refs
+      const quickModal = document.getElementById('quick-modal');
+      const quickImg = document.getElementById('quick-img');
+      const quickName = document.getElementById('quick-name');
+      const quickPrice = document.getElementById('quick-price');
+      const quickDesc = document.getElementById('quick-desc');
+      const quickQty = document.getElementById('quick-qty');
+      const quickAdd = document.getElementById('quick-add');
+      const quickClose = document.getElementById('quick-close');
+
+      // Ensure products exists
+      if (!window.products || !Array.isArray(window.products)) {
+        grid.innerHTML = '<div class="col-span-4 text-center text-gray-500 py-12">No products found.</div>';
+        return;
+      }
+
+      // state
+      let visible = 8;
+      let filtered = [...window.products];
+      let activeCategory = 'all';
+
+      // show skeletons
+      function showSkeletons(count=8){
+        grid.innerHTML = '';
+        for (let i=0;i<count;i++){
+          grid.appendChild(skeletonTpl.content.cloneNode(true));
+        }
+      }
+      showSkeletons(8);
+
+      // build category pills (auto)
+      function renderPills(){
+        const cats = new Set(['all']);
+        window.products.forEach(p=>cats.add(p.category));
+        pillsContainer.innerHTML = '';
+        cats.forEach(cat=>{
+          const btn = document.createElement('button');
+          btn.className = 'px-3 py-1 rounded-full text-sm border border-gray-200 bg-white/60 hover:bg-purple-50 transition';
+          btn.textContent = cat === 'all' ? 'All' : (cat.charAt(0).toUpperCase()+cat.slice(1));
+          btn.dataset.cat = cat;
+          btn.addEventListener('click', ()=>{ activeCategory = cat; applyFilters(); document.querySelectorAll('#category-pills button').forEach(b=>b.classList.remove('ring','ring-purple-300')); btn.classList.add('ring','ring-purple-300'); });
+          pillsContainer.appendChild(btn);
+        });
+      }
+      renderPills();
+
+      // render cards
+      function renderCards(list){
+        grid.innerHTML = '';
+        const slice = list.slice(0, visible);
+        if (!slice.length) { grid.innerHTML = '<div class="col-span-4 text-center text-gray-500 py-12">No products match.</div>'; loadMoreBtn.style.display='none'; return; }
+        slice.forEach((p, idx) => {
+          const col = document.createElement('article');
+          col.className = 'bg-white rounded-xl p-4 card-tilt reveal';
+          col.innerHTML = `
+            <div class="relative overflow-hidden rounded-md h-48 flex items-center justify-center bg-gray-50">
+              <img data-src="${p.imageSrc || p.image || ''}" alt="${p.name}" class="w-full h-full object-cover lazy-image" />
+              <div class="absolute top-3 right-3 bg-white/80 text-xs text-gray-800 px-2 py-1 rounded">${p.rating} ⭐</div>
+            </div>
+            <div class="mt-3 flex items-start justify-between gap-3">
+              <div>
+                <h4 class="font-semibold text-gray-800">${p.name}</h4>
+                <p class="text-sm text-gray-500 mt-1">${p.short || (p.category || '').toUpperCase()}</p>
+              </div>
+              <div class="text-right">
+                <div class="text-lg font-bold text-purple-600">₹${p.price.toLocaleString()}</div>
+                <div class="mt-2 flex gap-2 justify-end">
+                  <button class="quick-btn px-3 py-2 border rounded text-sm" data-id="${p.id}">Quick</button>
+                  <button class="add-btn px-3 py-2 bg-purple-600 text-white rounded text-sm" data-id="${p.id}">Add</button>
+                </div>
+              </div>
+            </div>
+          `;
+          grid.appendChild(col);
+        });
+
+        // lazy load images
+        document.querySelectorAll('.lazy-image').forEach(img => {
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+          }
+        });
+
+        // reveal animation with intersection observer and stagger
+        const reveals = grid.querySelectorAll('.reveal');
+        const io = new IntersectionObserver((entries, o) => {
+          entries.forEach((en, i) => {
+            if (en.isIntersecting) {
+              setTimeout(()=>en.target.classList.add('show'), 80 * i);
+              o.unobserve(en.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        reveals.forEach(r => io.observe(r));
+
+        // wire quick and add buttons
+        grid.querySelectorAll('.quick-btn').forEach(b => b.addEventListener('click', (e)=>openQuickModal(Number(e.currentTarget.dataset.id))));
+        grid.querySelectorAll('.add-btn').forEach(b => b.addEventListener('click', (e)=>flyToCart(Number(e.currentTarget.dataset.id), e.currentTarget)));
+        // show/hide load more
+        loadMoreBtn.style.display = list.length > visible ? 'inline-block' : 'none';
+      }
+
+      // apply filters & sort
+      function applyFilters(){
+        // show skeleton
+        showSkeletons(6);
+        setTimeout(()=>{ // small debounce / perceived loading
+          filtered = window.products.filter(p => (activeCategory === 'all' ? true : p.category === activeCategory));
+          const q = searchInput.value.trim().toLowerCase();
+          if (q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.short||'').toLowerCase().includes(q));
+          const sort = sortSelect.value;
+          if (sort==='price-low') filtered.sort((a,b)=>a.price-b.price);
+          else if (sort==='price-high') filtered.sort((a,b)=>b.price-a.price);
+          else if (sort==='rating') filtered.sort((a,b)=>b.rating-a.rating);
+          else if (sort==='name') filtered.sort((a,b)=>a.name.localeCompare(b.name));
+          renderCards(filtered);
+        }, 220);
+      }
+
+      // load more
+      loadMoreBtn.addEventListener('click', ()=>{ visible += 8; renderCards(filtered); });
+
+      // search handlers
+      searchInput.addEventListener('input', ()=>{ clearBtn.style.display = searchInput.value ? 'inline' : 'none'; visible = 8; applyFilters(); });
+      clearBtn.addEventListener('click', ()=>{ searchInput.value=''; clearBtn.style.display='none'; applyFilters(); });
+
+      // Open quick modal
+      function openQuickModal(id){
+        const p = window.products.find(x=>x.id===id);
+        if (!p) return;
+        quickImg.innerHTML = `<img src="${p.imageSrc || p.image || ''}" alt="${p.name}" class="w-full h-64 object-cover">`;
+        quickName.textContent = p.name;
+        quickPrice.textContent = `₹${p.price.toLocaleString()}`;
+        quickDesc.textContent = p.desc || (p.short || '');
+        quickQty.value = 1;
+        quickModal.classList.remove('hidden');
+        quickModal.classList.add('flex');
+        quickAdd.onclick = ()=>{ addToCartWithQty(id, Math.max(1, Number(quickQty.value))); quickModal.classList.remove('flex'); quickModal.classList.add('hidden'); };
+      }
+      quickClose.addEventListener('click', ()=>{ quickModal.classList.remove('flex'); quickModal.classList.add('hidden'); });
+
+      // Simple cart + fly animation
+      function flyToCart(id, btnEl){
+        // add item
+        addToCartWithQty(id, 1);
+        // visual fly
+        const card = btnEl.closest('article');
+        const img = card.querySelector('img');
+        if (!img) return;
+        const clone = img.cloneNode(true);
+        clone.className = 'cart-fly';
+        document.body.appendChild(clone);
+        const rect = img.getBoundingClientRect();
+        clone.style.left = rect.left + 'px';
+        clone.style.top = rect.top + 'px';
+        // target cart btn
+        const cartBtn = document.getElementById('cart-btn');
+        const cartRect = cartBtn.getBoundingClientRect();
+        requestAnimationFrame(()=> {
+          clone.style.transform = `translate(${cartRect.left - rect.left}px, ${cartRect.top - rect.top}px) scale(.3)`;
+          clone.style.opacity = '0.9';
+        });
+        setTimeout(()=> clone.remove(), 700);
+      }
+
+      // simple cart data stored in localStorage, adapted to your existing cart logic
+      function addToCartWithQty(id, qty){
+        // existing global cart logic fallback
+        if (window.addToCartWithQty) return window.addToCartWithQty(id, qty);
+        // local fallback
+        let cart = JSON.parse(localStorage.getItem('shophub_cart') || '[]');
+        const product = window.products.find(p=>p.id===id);
+        if (!product) return;
+        const existing = cart.find(c=>c.id===id);
+        if (existing) existing.quantity += qty; else cart.push({...product, quantity: qty});
+        localStorage.setItem('shophub_cart', JSON.stringify(cart));
+        // update cart-count if present
+        const cc = document.getElementById('cart-count');
+        if (cc) cc.textContent = cart.reduce((s,i)=>s+i.quantity,0);
+      }
+
+      // initialize
+      applyFilters();
+      // initial reveal for toolbar
+      document.querySelectorAll('#products .reveal').forEach(el => setTimeout(()=> el.classList.add('show'), 120));
+      // also populate pills active state for 'all'
+      document.querySelectorAll('#category-pills button')[0]?.classList.add('ring','ring-purple-300');
+    })();
+  </script>
+</section>
+<!-- END: Enhanced Animated Products Section -->
+
+    <!-- START: Enhanced About Section -->
+<section id="about" class="py-20 bg-white">
+  <style>
+    /* small animation utilities */
+    .reveal { opacity: 0; transform: translateY(18px) scale(.995); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.show { opacity: 1; transform: none; }
+
+    .card-pop { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
+    .card-pop:hover, .card-pop:focus { transform: translateY(-8px) scale(1.01); box-shadow: 0 18px 40px rgba(13,20,40,.08); }
+
+    .icon-anim { transition: transform .9s ease-in-out; }
+    .icon-anim.spin { animation: iconSpin 6s linear infinite; }
+    @keyframes iconSpin { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+
+    .badge { display:inline-block; padding:.35rem .6rem; border-radius:9999px; font-weight:600; font-size:.8rem; background:linear-gradient(90deg,#7c3aed,#4f46e5); color:white; }
+
+    /* counters */
+    .stat { font-weight:800; font-size:1.6rem; color:#0f172a; }
+
+    /* accessibility: respect reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      .icon-anim, .icon-anim.spin { animation: none !important; transition: none !important; }
+      .reveal { transition: none !important; transform: none !important; opacity: 1 !important; }
+    }
+  </style>
+
+  <div class="container mx-auto px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="mb-6">
+        <span class="badge">Trusted • Professional</span>
+      </div>
+
+      <h3 class="text-3xl font-bold mb-4 text-gray-800 reveal" id="about-head">Why choose <span class="text-indigo-600">ShopHub</span>?</h3>
+      <p class="text-gray-600 max-w-2xl mx-auto mb-10 reveal" id="about-sub">
+        We combine curated selections, secure payments and fast delivery to give you a premium shopping experience — designed for convenience and trust.
+      </p>
+
+      <!-- feature cards -->
+      <div class="grid md:grid-cols-3 gap-6" role="list" aria-label="Key benefits">
+        <div class="p-6 bg-white rounded-xl border card-pop reveal" role="listitem" tabindex="0">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-lg bg-indigo-50 flex items-center justify-center">
+              <!-- shipping SVG -->
+              <svg class="w-8 h-8 text-indigo-600 icon-anim" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 3h13v13H3z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M16 8h4l-1.5 4.5"></path>
+                <circle cx="7.5" cy="17.5" r="1.5"></circle>
+                <circle cx="18.5" cy="17.5" r="1.5"></circle>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800">Free & Fast Shipping</h4>
+              <p class="text-sm text-gray-600 mt-2">Free shipping on orders above ₹500 and expedited options available for urgent needs.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border card-pop reveal" role="listitem" tabindex="0">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+              <!-- lock / payment SVG -->
+              <svg class="w-8 h-8 text-green-700 icon-anim spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0110 0v4"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800">Secure Payments</h4>
+              <p class="text-sm text-gray-600 mt-2">All transactions are encrypted and PCI-compliant. Multiple payment options including UPI and cards.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 bg-white rounded-xl border card-pop reveal" role="listitem" tabindex="0">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-lg bg-yellow-50 flex items-center justify-center">
+              <!-- star icon -->
+              <svg class="w-8 h-8 text-yellow-600 icon-anim" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 17.3l6.18 3.9-1.64-7.03L21 9.24l-7.19-.62L12 2 10.19 8.62 3 9.24l4.46 4.93L5.82 21.2z"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800">Quality Products</h4>
+              <p class="text-sm text-gray-600 mt-2">We vet suppliers and test bestsellers to ensure long-lasting value and satisfaction.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- stats row -->
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6 reveal" id="about-stats">
+        <div class="text-center">
+          <div class="stat" data-target="1200">0</div>
+          <div class="text-sm text-gray-500">Happy customers</div>
+        </div>
+        <div class="text-center">
+          <div class="stat" data-target="98">0</div>
+          <div class="text-sm text-gray-500">% Satisfaction</div>
+        </div>
+        <div class="text-center">
+          <div class="stat" data-target="350">0</div>
+          <div class="text-sm text-gray-500">Products</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Reveal on scroll
+    (function () {
+      const reveals = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+      }, { threshold: 0.18 });
+      reveals.forEach(r => io.observe(r));
+
+      // animate counters once when visible
+      const stats = document.querySelectorAll('.stat');
+      const statObserver = new IntersectionObserver(entries => {
+        entries.forEach(ent => {
+          if (!ent.isIntersecting) return;
+          const el = ent.target;
+          if (el.dataset.animated) return;
+          const target = Number(el.dataset.target) || 0;
+          let cur = 0;
+          const step = Math.ceil(target / 60);
+          const t = setInterval(() => {
+            cur += step;
+            if (cur >= target) { el.textContent = target; clearInterval(t); }
+            else el.textContent = cur;
+          }, 16);
+          el.dataset.animated = 'true';
+        });
+      }, { threshold: 0.6 });
+      stats.forEach(s => statObserver.observe(s));
+    })();
+  </script>
+</section>
+
+    <!-- START: Enhanced Animated Footer -->
+<footer aria-labelledby="footer-heading" class="relative">
+  <style>
+    /* Footer visuals */
+    .footer-bg {
+      background: linear-gradient(180deg,#6d28d9 0%, #4f46e5 50%, #0ea5e9 100%);
+    }
+    .footer-wave { opacity:.12; }
+
+    /* entrance reveal */
+    .fade-up { opacity:0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-up.show { opacity:1; transform: none; }
+
+    /* small hover/interaction */
+    .social-btn { transition: transform .18s ease, background .18s ease; }
+    .social-btn:hover { transform: translateY(-4px) scale(1.03); }
+
+    /* back-to-top */
+    #back-to-top {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 60;
+      display: none;
+      border-radius: 9999px;
+      padding: 10px 12px;
+      box-shadow: 0 10px 30px rgba(2,6,23,.18);
+      background: linear-gradient(90deg,#7c3aed,#4f46e5);
+      color: white;
+      cursor: pointer;
+    }
+    #back-to-top:focus { outline: 3px solid rgba(255,255,255,.18); outline-offset: 3px; }
+
+    /* subscribe input */
+    .subscribe-input { transition: box-shadow .18s ease, transform .12s ease; }
+    .subscribe-input:focus { box-shadow: 0 8px 24px rgba(79,70,229,.18); transform: translateY(-2px); }
+
+    /* accessibility: prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up, .social-btn, .subscribe-input { transition: none !important; transform: none !important; }
+    }
+
+    /* responsive tweaks */
+    @media (max-width:640px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    }
+  </style>
+
+  <!-- decorative gradient + wave -->
+  <div class="footer-bg text-white pt-12 pb-6">
+    <div class="container mx-auto px-4 sm:px-6">
+      <div id="footer-content" class="grid footer-grid grid-cols-3 gap-8 items-start text-left fade-up" role="region" aria-label="ShopHub footer">
+        <!-- Column 1: Brand + short -->
+        <div class="col-span-1">
+          <div class="flex items-center gap-3 mb-3">
+            <div aria-hidden class="w-12 h-12 rounded-lg flex items-center justify-center bg-white/10 text-white text-lg font-bold">SH</div>
+            <div>
+              <div class="font-bold text-lg">ShopHub</div>
+              <div class="text-sm mt-1 text-white/90">Your One-Stop Shop — curated by Pranesh</div>
+            </div>
+          </div>
+
+          <p class="text-sm text-white/80 mb-4">Curated deals, secure checkout and fast delivery. Contact us for collaborations or product listings.</p>
+
+          <div class="flex items-center gap-3">
+            <a class="social-btn inline-flex items-center gap-2 px-3 py-2 rounded bg-white/10" href="https://www.linkedin.com/in/pranesh-j-i" target="_blank" rel="noopener" aria-label="Pranesh on LinkedIn">
+              <!-- LinkedIn SVG -->
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M4.98 3.5C4.98 4.88 3.86 6 2.49 6S0 4.88 0 3.5 1.12 1 2.49 1 4.98 2.12 4.98 3.5zM0 8h4.98v13H0zM7.98 8H12v1.78h.07c.55-1 1.9-2.06 3.9-2.06 4.17 0 4.94 2.74 4.94 6.31V21H17.2v-6.07c0-1.45-.03-3.31-2.02-3.31-2.02 0-2.33 1.58-2.33 3.2V21H7.98z"/></svg>
+              <span class="text-sm">LinkedIn</span>
+            </a>
+
+            <a class="social-btn inline-flex items-center gap-2 px-3 py-2 rounded bg-white/10" href="https://www.instagram.com/_am_pranesh" target="_blank" rel="noopener" aria-label="Pranesh on Instagram">
+              <!-- Instagram SVG -->
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6.2a3.8 3.8 0 100 7.6 3.8 3.8 0 000-7.6zM17.5 6a1 1 0 110 2 1 1 0 010-2z"/></svg>
+              <span class="text-sm">Instagram</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 2: Contact & details -->
+        <div class="col-span-1">
+          <h4 class="font-semibold mb-3">Contact</h4>
+          <ul class="text-sm space-y-2">
+            <li>👤 <strong>Pranesh</strong></li>
+            <li>📞 <a href="tel:+917619452752" class="underline">+91 76194 52752</a></li>
+            <li>✉️ <a href="mailto:pjime7619@gmail.com" class="underline">pjime7619@gmail.com</a></li>
+            <li>🔗 <a href="https://www.linkedin.com/in/pranesh-j-i" target="_blank" rel="noopener" class="underline">linkedin.com/in/pranesh-j-i</a></li>
+          </ul>
+
+          <div class="mt-4">
+            <a href="#contact" class="inline-block px-4 py-2 rounded bg-white/10 hover:bg-white/20">Contact Form</a>
+          </div>
+        </div>
+
+        <!-- Column 3: Subscribe + small links -->
+        <div class="col-span-1">
+          <h4 class="font-semibold mb-3">Stay in the loop</h4>
+          <p class="text-sm text-white/80 mb-3">Subscribe for deals & new arrivals — demo (local only)</p>
+
+          <form id="footer-subscribe-form" class="flex gap-2 items-center" onsubmit="return false;" aria-label="Subscribe form">
+            <input id="footer-email" class="subscribe-input flex-1 px-3 py-2 rounded border-none" type="email" placeholder="you@example.com" aria-label="Email address" required>
+            <button id="footer-sub-btn" class="px-4 py-2 rounded bg-white text-indigo-700 font-semibold" aria-label="Subscribe">Subscribe</button>
+          </form>
+
+          <div class="mt-4 text-sm text-white/80 space-y-2">
+            <div><a href="/terms" class="underline">Terms</a> • <a href="/privacy" class="underline">Privacy</a></div>
+            <div class="mt-2 text-xs">Built & maintained by <strong>Pranesh</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bottom row -->
+      <div class="mt-8 text-center text-white/80 fade-up" id="footer-bottom">
+        <p id="copyright-text" class="text-sm"></p>
+      </div>
+    </div>
+
+    <!-- subtle SVG wave at footer bottom -->
+    <div class="mt-6">
+      <svg class="w-full h-12 footer-wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden>
+        <path d="M0 0c200 60 400 -20 600 0s400 80 600 0v60H0z" fill="#000" opacity="0.06"></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- back to top -->
+  <button id="back-to-top" title="Back to top" aria-label="Back to top">↑</button>
+</footer>
+
+<script>
+  // Footer behavior & animations
+  (function () {
+    // fade-up reveal
+    const footerAreas = document.querySelectorAll('#footer-content, #footer-bottom');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.12 });
+    footerAreas.forEach(a => io.observe(a));
+
+    // dynamic year
+    const now = new Date();
+    const year = now.getFullYear();
+    document.getElementById('copyright-text').textContent = `© ${year} ShopHub. All rights reserved.`;
+
+    // subscribe (demo) - validate and store locally
+    const form = document.getElementById('footer-subscribe-form');
+    const emailInput = document.getElementById('footer-email');
+    const btn = document.getElementById('footer-sub-btn');
+
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.setAttribute('role','status');
+      t.className = 'fixed right-4 bottom-24 bg-white text-indigo-700 px-4 py-2 rounded shadow';
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 2200);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+        showToast('Please enter a valid email.');
+        emailInput.focus();
+        return;
+      }
+      // store in localStorage (demo). In production, POST to your API.
+      const stored = JSON.parse(localStorage.getItem('shophub_subs') || '[]');
+      if (!stored.includes(email)) {
+        stored.push(email);
+        localStorage.setItem('shophub_subs', JSON.stringify(stored));
+        showToast('Subscribed — thank you!');
+        emailInput.value = '';
+      } else {
+        showToast('You are already subscribed (demo).');
+      }
+    });
+
+    // back to top logic
+    const btnTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 360) btnTop.style.display = 'block'; else btnTop.style.display = 'none';
+    });
+    btnTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      btnTop.blur();
+    });
+
+    // keyboard accessibility: allow Enter on subscribe button
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') form.dispatchEvent(new Event('submit', { cancelable: true }));
+    });
+
+    // small focus ring on social buttons
+    document.querySelectorAll('.social-btn').forEach(s => s.setAttribute('tabindex','0'));
+  })();
+</script>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <div class="gradient-bg text-white p-6 flex justify-between items-center">
+                <h3 class="text-2xl font-bold">Shopping Cart</h3>
+                <button id="close-cart" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+            </div>
+            
+            <div id="cart-items" class="p-6 max-h-96 overflow-y-auto">
+                <!-- Cart items will be inserted here -->
+            </div>
+            
+            <div class="border-t p-6 bg-gray-50">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xl font-bold">Total:</span>
+                    <span id="cart-total" class="text-2xl font-bold text-purple-600">₹0</span>
+                </div>
+                <button class="w-full gradient-bg text-white py-3 rounded-lg font-bold text-lg hover:opacity-90 transition">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [
+    { id: 1, name: "Wireless Headphones", price: 2499, category: "electronics", image: "🎧", rating: 4.5 },
+    { id: 2, name: "Smart Watch", price: 3999, category: "electronics", image: "⌚", rating: 4.8 },
+    { id: 3, name: "Laptop Backpack", price: 1299, category: "fashion", image: "🎒", rating: 4.3 },
+    { id: 4, name: "Coffee Maker", price: 2799, category: "home", image: "☕", rating: 4.6 },
+    { id: 5, name: "Running Shoes", price: 3499, category: "fashion", image: "👟", rating: 4.7 },
+    { id: 6, name: "Desk Lamp", price: 899, category: "home", image: "💡", rating: 4.4 },
+    { id: 7, name: "Bluetooth Speaker", price: 1899, category: "electronics", image: "🔊", rating: 4.5 },
+    { id: 8, name: "Winter Jacket", price: 4999, category: "fashion", image: "🧥", rating: 4.9 },
+    { id: 9, name: "Plant Pot Set", price: 699, category: "home", image: "🪴", rating: 4.2 },
+    { id: 10, name: "Gaming Mouse", price: 1599, category: "electronics", image: "🖱️", rating: 4.6 },
+    { id: 11, name: "Sunglasses", price: 1999, category: "fashion", image: "🕶️", rating: 4.4 },
+    { id: 12, name: "Wall Clock", price: 1299, category: "home", image: "🕐", rating: 4.3 },
+    { id: 13, name: "Wireless Earbuds", price: 1799, category: "electronics", image: "🎶", rating: 4.5 },
+    { id: 14, name: "Portable Power Bank", price: 1399, category: "electronics", image: "🔋", rating: 4.6 },
+    { id: 15, name: "Casual T-Shirt", price: 699, category: "fashion", image: "👕", rating: 4.2 },
+    { id: 16, name: "Formal Shoes", price: 2599, category: "fashion", image: "👞", rating: 4.4 },
+    { id: 17, name: "Air Purifier", price: 5499, category: "home", image: "🌬️", rating: 4.8 },
+    { id: 18, name: "Smart LED Bulb", price: 499, category: "home", image: "💡", rating: 4.3 },
+    { id: 19, name: "Electric Kettle", price: 999, category: "home", image: "🥤", rating: 4.5 },
+    { id: 20, name: "Wireless Keyboard", price: 1899, category: "electronics", image: "⌨️", rating: 4.6 },
+    { id: 21, name: "Office Chair", price: 5499, category: "home", image: "🪑", rating: 4.7 },
+    { id: 22, name: "Smart TV Stick", price: 3499, category: "electronics", image: "📺", rating: 4.6 },
+    { id: 23, name: "Leather Wallet", price: 899, category: "fashion", image: "👛", rating: 4.3 },
+    { id: 24, name: "Backlit Gaming Keyboard", price: 2299, category: "electronics", image: "🎮", rating: 4.7 },
+    { id: 25, name: "Water Bottle (Steel)", price: 499, category: "home", image: "🥤", rating: 4.4 },
+    { id: 26, name: "Fitness Band", price: 1599, category: "electronics", image: "📱", rating: 4.4 },
+    { id: 27, name: "Travel Luggage", price: 3499, category: "fashion", image: "🧳", rating: 4.5 },
+    { id: 28, name: "Room Humidifier", price: 1499, category: "home", image: "💧", rating: 4.6 },
+    { id: 29, name: "Table Fan", price: 1399, category: "home", image: "🌀", rating: 4.2 },
+    { id: 30, name: "Wireless Charger", price: 999, category: "electronics", image: "⚡", rating: 4.4 },
+    { id: 31, name: "Hoodie for Men", price: 1799, category: "fashion", image: "🧥", rating: 4.6 },
+    { id: 32, name: "Coffee Mug Set", price: 599, category: "home", image: "☕", rating: 4.3 },
+    { id: 33, name: "Noise Cancelling Earphones", price: 2199, category: "electronics", image: "🎧", rating: 4.6 },
+    { id: 34, name: "Portable Mini Projector", price: 4999, category: "electronics", image: "📽️", rating: 4.7 },
+    { id: 35, name: "Smartphone Tripod", price: 899, category: "electronics", image: "📷", rating: 4.3 },
+    { id: 36, name: "VR Headset", price: 5999, category: "electronics", image: "🕶️", rating: 4.8 },
+    { id: 37, name: "USB-C Hub", price: 1299, category: "electronics", image: "🔌", rating: 4.5 },
+    { id: 38, name: "Mechanical Keyboard", price: 2999, category: "electronics", image: "⌨️", rating: 4.8 },
+    { id: 39, name: "Smartphone Gimbal", price: 3499, category: "electronics", image: "🤳", rating: 4.6 },
+    { id: 40, name: "LED Strip Lights", price: 799, category: "home", image: "🌈", rating: 4.4 },
+    { id: 41, name: "Mini Air Cooler", price: 1499, category: "home", image: "❄️", rating: 4.5 },
+    { id: 42, name: "Wireless Doorbell", price: 999, category: "home", image: "🚪", rating: 4.2 },
+    { id: 43, name: "Kitchen Knife Set", price: 1299, category: "home", image: "🔪", rating: 4.6 },
+    { id: 44, name: "Non-stick Pan Set", price: 1999, category: "home", image: "🍳", rating: 4.3 },
+    { id: 45, name: "Vacuum Cleaner", price: 4599, category: "home", image: "🧹", rating: 4.7 },
+    { id: 46, name: "Induction Cooktop", price: 2499, category: "home", image: "🔥", rating: 4.4 },
+    { id: 47, name: "Electric Toothbrush", price: 1499, category: "home", image: "🦷", rating: 4.5 },
+    { id: 48, name: "Face Massager", price: 999, category: "home", image: "💆‍♂️", rating: 4.3 },
+    { id: 49, name: "Deodorant Combo Pack", price: 699, category: "fashion", image: "🧴", rating: 4.2 },
+    { id: 50, name: "Premium Leather Belt", price: 1199, category: "fashion", image: "👔", rating: 4.5 },
+    { id: 51, name: "Casual Sneakers", price: 2199, category: "fashion", image: "👟", rating: 4.7 },
+    { id: 52, name: "Ladies Handbag", price: 2599, category: "fashion", image: "👜", rating: 4.6 },
+    { id: 53, name: "Sports Shorts", price: 899, category: "fashion", image: "🩳", rating: 4.3 },
+    { id: 54, name: "Cotton Bedsheet Set", price: 1099, category: "home", image: "🛏️", rating: 4.4 },
+    { id: 55, name: "Table Organizer", price: 599, category: "home", image: "📚", rating: 4.2 },
+    { id: 56, name: "Robot Vacuum", price: 9499, category: "home", image: "🤖", rating: 4.8 },
+    { id: 57, name: "Portable Grill", price: 2999, category: "home", image: "🍖", rating: 4.5 },
+    { id: 58, name: "Action Camera", price: 5499, category: "electronics", image: "📸", rating: 4.7 },
+    { id: 59, name: "Smart Home Plug", price: 799, category: "electronics", image: "🔌", rating: 4.4 },
+    {id: 60, name: "Kids Toy Car", price: 1299, category: "home", image: "🚗", rating: 4.6 },
+    { id: 61, name: "Stylish Cap", price: 499, category: "fashion", image: "🧢", rating: 4.3 },
+    { id: 62, name: "Sports Water Jug", price: 899, category: "home", image: "🏏", rating: 4.5 }
+];
+        let cart = [];
+        let currentFilter = 'all';
+        let currentSort = 'default';
+
+        // Display Products
+        function displayProducts(productsToShow) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            productsToShow.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer';
+                card.innerHTML = `
+                    <div class="p-6">
+                        <div class="text-7xl text-center mb-4">${product.image}</div>
+                        <h4 class="font-bold text-lg mb-2 text-gray-800">${product.name}</h4>
+                        <div class="flex items-center mb-2">
+                            <span class="text-yellow-400">${'⭐'.repeat(Math.floor(product.rating))}</span>
+                            <span class="text-gray-500 text-sm ml-2">(${product.rating})</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-2xl font-bold text-purple-600">₹${product.price}</span>
+                            <button onclick="addToCart(${product.id})" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition transform hover:scale-105">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter Products
+        function filterCategory(category) {
+            currentFilter = category;
+            applyFiltersAndSort();
+        }
+
+        // Sort Products
+        document.getElementById('sort-select').addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            applyFiltersAndSort();
+        });
+
+        // Apply Filters and Sort
+        function applyFiltersAndSort() {
+            let filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
+            
+            if (currentSort === 'price-low') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (currentSort === 'price-high') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (currentSort === 'name') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            displayProducts(filtered);
+        }
+
+        // Add to Cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCart();
+            showNotification('Added to cart!');
+        }
+
+        // Update Cart
+        function updateCart() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-center text-gray-500 py-8">Your cart is empty</p>';
+                cartTotal.textContent = '₹0';
+                return;
+            }
+            
+            cartItems.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between mb-4 pb-4 border-b">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-4xl">${item.image}</div>
+                        <div>
+                            <h4 class="font-semibold">${item.name}</h4>
+                            <p class="text-gray-600">₹${item.price} × ${item.quantity}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                        <span class="px-3">${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 ml-4 hover:text-red-700">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = `₹${total.toLocaleString()}`;
+        }
+
+        // Update Quantity
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCart();
+                }
+            }
+        }
+
+        // Remove from Cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        // Show Notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // Cart Modal
+        document.getElementById('cart-btn').addEventListener('click', () => {
+            document.getElementById('cart-modal').classList.add('active');
+        });
+
+        document.getElementById('close-cart').addEventListener('click', () => {
+            document.getElementById('cart-modal').classList.remove('active');
+        });
+
+        document.getElementById('cart-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'cart-modal') {
+                document.getElementById('cart-modal').classList.remove('active');
+            }
+        });
+
+        // Initialize
+        displayProducts(products);
+    </script>
+</body>
+</html>
