@@ -55,6 +55,8 @@ Contributions and suggestions are always welcome!
 ⭐ Support the Project
 If you find this project useful, consider giving it a ⭐ on GitHub!
 
+https://pranij8310.github.io/shophub/
+
 <img width="1440" height="900" alt="Screenshot 2025-12-01 at 9 15 26 PM" src="https://github.com/user-attachments/assets/d6f9be70-6486-4ad1-9273-31b8f88afc31" />
 
 
